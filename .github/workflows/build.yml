@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ x86_64, aarch64 ]
+        arch: [ x86_64, aarch64, armv7 ]
 
     steps:
       - name: Checkout
@@ -27,24 +27,41 @@ jobs:
           echo "Building for arch: ${{ matrix.arch }}"
           uname -a || true
 
+      - name: Setup Python for tests
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install test deps & run pytest
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install pytest
+          PYTHONPATH=. pytest -q
+
       - name: Build for x86_64 on-host
         if: matrix.arch == 'x86_64'
         run: |
           set -eux
           bash build.sh x86_64
-
-      - name: Prepare QEMU for cross-arch (aarch64)
-        if: matrix.arch == 'aarch64'
+      - name: Prepare QEMU for cross-arch (aarch64/armv7)
+        if: matrix.arch == 'aarch64' || matrix.arch == 'armv7'
         uses: docker/setup-qemu-action@v2
 
-      - name: Build inside arm64 container (aarch64)
-        if: matrix.arch == 'aarch64'
+      - name: Build inside arm container (aarch64/armv7)
+        if: matrix.arch == 'aarch64' || matrix.arch == 'armv7'
         run: |
           set -eux
-          # use an arm64 ubuntu container to run the build script
-          docker run --platform linux/arm64 --rm \
+          PLATFORM=linux/arm64
+          TARGET_ARG=aarch64
+          if [ "${{ matrix.arch }}" = "armv7" ]; then
+            PLATFORM=linux/arm/v7
+            TARGET_ARG=armv7
+          fi
+          # use an arm container to run the build script via Docker+QEMU
+          docker run --platform ${PLATFORM} --rm \
             -v "${{ github.workspace }}:/work" -w /work ubuntu:22.04 \
-            bash -lc "apt-get update && apt-get install -y python3 python3-venv python3-pip wget curl build-essential git && bash build.sh aarch64"
+            bash -lc "apt-get update && apt-get install -y python3 python3-venv python3-pip wget curl build-essential git && bash build.sh ${TARGET_ARG}"
 
       - name: List build artifacts
         run: ls -la build || true

@@ -5,13 +5,17 @@
   <summary>Ultra-fast file search for Linux</summary>
   <description>
     <p>Everyfind is a fast, GTK-based file search application that uses fzf for fuzzy search and SQLite for indexing.</p>
+    <p>Note: The architecture was co-designed with AI (Microsoft Copilot). Portions of the code were generated using GitHub Copilot and subsequently reviewed by the project author.</p>
   </description>
-  <url type="homepage">https://github.com/yourname/everyfind</url>
+  <url type="homepage">https://github.com/Wacken2012/everyfind</url>
   <metadata_license>CC0-1.0</metadata_license>
   <launchable type="desktop-id">everyfind</launchable>
   <provides>
     <binary>everyfind</binary>
   </provides>
+  <screenshots>
+    <screenshot type="default">/usr/share/icons/hicolor/256x256/apps/everyfind.png</screenshot>
+  </screenshots>
   <releases>
     <release version="0.1.0" date="2025-11-08"/>
   </releases>
