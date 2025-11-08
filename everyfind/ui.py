@@ -171,9 +171,11 @@ class EveryfindWindow(Gtk.Window):
         try:
             if self.settings.get("auto_reindex") and self.settings.get("indexed_paths"):
                 def _run_index():
+                    filters = self.settings.get("file_filters", [])
+                    excludes = self.settings.get("excluded_paths", [])
                     for p in self.settings.get("indexed_paths", []):
                         try:
-                            self.indexer.index_directory(p)
+                            self.indexer.index_directory(p, filters=filters, excludes=excludes)
                         except Exception as e:
                             logger.error(f"Indexing {p} failed: {e}")
 
@@ -208,9 +210,11 @@ class EveryfindWindow(Gtk.Window):
                 # If there are new indexed paths and auto_reindex is enabled, index them
                 if new_settings.get("auto_reindex") and new_settings.get("indexed_paths"):
                     def _run_index():
+                        filters = new_settings.get("file_filters", [])
+                        excludes = new_settings.get("excluded_paths", [])
                         for p in new_settings.get("indexed_paths", []):
                             try:
-                                self.indexer.index_directory(p)
+                                self.indexer.index_directory(p, filters=filters, excludes=excludes)
                             except Exception as e:
                                 logger.error(f"Indexing {p} failed: {e}")
 
