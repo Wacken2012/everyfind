@@ -14,7 +14,12 @@
     <binary>everyfind</binary>
   </provides>
   <screenshots>
-    <screenshot type="default">/usr/share/icons/hicolor/256x256/apps/everyfind.png</screenshot>
+    <screenshot type="default">
+      <image>assets/screenshots/everyfind-main.png</image>
+    </screenshot>
+    <screenshot>
+      <image>assets/screenshots/everyfind-details.png</image>
+    </screenshot>
   </screenshots>
   <releases>
     <release version="0.1.0" date="2025-11-08"/>

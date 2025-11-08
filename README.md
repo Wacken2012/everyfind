@@ -1,5 +1,7 @@
 git clone https://github.com/deinname/everyfind.git
 everyfind index /pfad/zum/durchsuchen
+git clone https://github.com/deinname/everyfind.git
+everyfind index /pfad/zum/durchsuchen
 everyfind search
 everyfind gui
 <!--
@@ -124,4 +126,13 @@ See `CONTRIBUTING.md` for contribution guidelines, coding style, and the pull re
 
 ---
 
+## 🖼️ Screenshots
+
+### Hauptfenster
+
+![Everyfind Hauptfenster](assets/screenshots/everyfind-main.png)
+
+### Dateidetails
+
+![Details-Dialog](assets/screenshots/everyfind-details.png)
 If you use or distribute Everyfind, please respect the licenses of bundled components (e.g., fzf: MIT, PyGObject: LGPL, SQLite: Public Domain). If you have questions about licensing, open an issue.
