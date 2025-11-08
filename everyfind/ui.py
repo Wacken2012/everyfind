@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import logging
 from pathlib import Path
 from typing import Optional, List
+import threading
 
 try:
     import gi
@@ -32,6 +33,8 @@ except ImportError as e:
 
 from .indexer import FileIndexer
 from .actions import FileActions
+from .settings import load_settings, save_settings
+from .ui_settings import SettingsDialog
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +54,11 @@ class EveryfindWindow(Gtk.Window):
         self.indexer = indexer
         self.actions = FileActions()
         self.current_results: List[str] = []
+        # Load settings
+        try:
+            self.settings = load_settings()
+        except Exception:
+            self.settings = {}
         
         # Window settings
         self.set_default_size(800, 600)
@@ -66,6 +74,22 @@ class EveryfindWindow(Gtk.Window):
     
     def _create_widgets(self):
         """Create all UI widgets."""
+        # Menu bar
+        self.menu_bar = Gtk.MenuBar()
+        file_menu = Gtk.Menu()
+        file_item = Gtk.MenuItem(label="File")
+        file_item.set_submenu(file_menu)
+
+        settings_item = Gtk.MenuItem(label="Einstellungen...")
+        settings_item.connect("activate", self._on_open_settings)
+        file_menu.append(settings_item)
+
+        quit_item = Gtk.MenuItem(label="Quit")
+        quit_item.connect("activate", lambda w: Gtk.main_quit())
+        file_menu.append(quit_item)
+
+        self.menu_bar.append(file_item)
+
         # Search entry
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.set_placeholder_text("Search files...")
@@ -125,8 +149,11 @@ class EveryfindWindow(Gtk.Window):
     def _setup_layout(self):
         """Setup the window layout."""
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        
-        # Search entry at top
+
+        # Menu bar at very top
+        vbox.pack_start(self.menu_bar, False, False, 0)
+
+        # Search entry below menu
         vbox.pack_start(self.search_entry, False, False, 0)
         
         # Result count
@@ -139,6 +166,21 @@ class EveryfindWindow(Gtk.Window):
         vbox.pack_start(self.status_bar, False, False, 0)
         
         self.add(vbox)
+
+        # Apply settings: optionally start indexing
+        try:
+            if self.settings.get("auto_reindex") and self.settings.get("indexed_paths"):
+                def _run_index():
+                    for p in self.settings.get("indexed_paths", []):
+                        try:
+                            self.indexer.index_directory(p)
+                        except Exception as e:
+                            logger.error(f"Indexing {p} failed: {e}")
+
+                t = threading.Thread(target=_run_index, daemon=True)
+                t.start()
+        except Exception:
+            pass
     
     def _connect_signals(self):
         """Connect widget signals to handlers."""
@@ -153,6 +195,31 @@ class EveryfindWindow(Gtk.Window):
         # Window
         self.connect("destroy", Gtk.main_quit)
         self.connect("key-press-event", self._on_key_press)
+
+    def _on_open_settings(self, widget):
+        """Open the settings dialog and apply/save settings on OK."""
+        dialog = SettingsDialog(self, self.settings or {})
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            new_settings = dialog.get_settings()
+            try:
+                save_settings(new_settings)
+                self.settings = new_settings
+                # If there are new indexed paths and auto_reindex is enabled, index them
+                if new_settings.get("auto_reindex") and new_settings.get("indexed_paths"):
+                    def _run_index():
+                        for p in new_settings.get("indexed_paths", []):
+                            try:
+                                self.indexer.index_directory(p)
+                            except Exception as e:
+                                logger.error(f"Indexing {p} failed: {e}")
+
+                    t = threading.Thread(target=_run_index, daemon=True)
+                    t.start()
+            except Exception as e:
+                logger.error(f"Failed to save settings: {e}")
+
+        dialog.destroy()
     
     def _load_all_files(self):
         """Load all files from the index."""
