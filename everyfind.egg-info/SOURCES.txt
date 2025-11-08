@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+everyfind/__init__.py
+everyfind/actions.py
+everyfind/cli.py
+everyfind/indexer.py
+everyfind/search_backend.py
+everyfind/ui.py
+everyfind.egg-info/PKG-INFO
+everyfind.egg-info/SOURCES.txt
+everyfind.egg-info/dependency_links.txt
+everyfind.egg-info/entry_points.txt
+everyfind.egg-info/requires.txt
+everyfind.egg-info/top_level.txt

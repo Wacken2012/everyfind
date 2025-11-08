@@ -1,0 +1,54 @@
+[project]
+name = "everyfind"
+version = "0.1.0"
+description = "Ultra-fast file search for Linux with fzf and GTK"
+authors = [
+    {name = "Stefan", email = "stefan@example.com"}
+]
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["search", "files", "fzf", "gtk", "linux"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Desktop Environment",
+    "Topic :: System :: Filesystems",
+]
+
+dependencies = [
+    "iterfzf>=0.3.0",
+    "PyGObject>=3.42.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+everyfind = "everyfind.cli:main"
+everyfind-gui = "everyfind.ui:run_gui"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["everyfind"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

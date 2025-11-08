@@ -1,0 +1,9 @@
+#!/bin/sh
+'''exec' "/home/stefan/Dokumente/Programmieren lernen/Everyfind/build/everyfind-x86_64.AppDir/usr/venv/bin/python3" "$0" "$@"
+' '''
+import sys
+from everyfind.cli import main
+if __name__ == '__main__':
+    if sys.argv[0].endswith('.exe'):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main())

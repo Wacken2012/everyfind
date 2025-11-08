@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Everyfind
+Comment=Ultra-fast file search for Linux
+Exec=AppRun
+Icon=everyfind
+Categories=Utility;GTK;
+Terminal=false

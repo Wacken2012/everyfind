@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop-application">
+  <id>com.example.everyfind</id>
+  <name>Everyfind</name>
+  <summary>Ultra-fast file search for Linux</summary>
+  <description>
+    <p>Everyfind is a fast, GTK-based file search application that uses fzf for fuzzy search and SQLite for indexing.</p>
+  </description>
+  <url type="homepage">https://github.com/yourname/everyfind</url>
+  <metadata_license>CC0-1.0</metadata_license>
+  <launchable type="desktop-id">everyfind</launchable>
+  <provides>
+    <binary>everyfind</binary>
+  </provides>
+  <releases>
+    <release version="0.1.0" date="2025-11-08"/>
+  </releases>
+  <categories>
+    <category>Utility</category>
+  </categories>
+  <project_license>GPL-3.0-or-later</project_license>
+</component>

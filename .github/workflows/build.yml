@@ -1,0 +1,87 @@
+name: Build AppImages
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      arch:
+        description: 'Target architecture (x86_64 or aarch64)'
+        required: false
+
+jobs:
+  build:
+    name: Build AppImages (matrix)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ x86_64, aarch64 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show build info
+        run: |
+          echo "Building for arch: ${{ matrix.arch }}"
+          uname -a || true
+
+      - name: Build for x86_64 on-host
+        if: matrix.arch == 'x86_64'
+        run: |
+          set -eux
+          bash build.sh x86_64
+
+      - name: Prepare QEMU for cross-arch (aarch64)
+        if: matrix.arch == 'aarch64'
+        uses: docker/setup-qemu-action@v2
+
+      - name: Build inside arm64 container (aarch64)
+        if: matrix.arch == 'aarch64'
+        run: |
+          set -eux
+          # use an arm64 ubuntu container to run the build script
+          docker run --platform linux/arm64 --rm \
+            -v "${{ github.workspace }}:/work" -w /work ubuntu:22.04 \
+            bash -lc "apt-get update && apt-get install -y python3 python3-venv python3-pip wget curl build-essential git && bash build.sh aarch64"
+
+      - name: List build artifacts
+        run: ls -la build || true
+
+      - name: Upload AppImage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everyfind-${{ matrix.arch }}
+          path: |
+            build/*.AppImage
+
+  release:
+    name: Create GitHub Release (on tag)
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload AppImages to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: 'Automated AppImage build'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

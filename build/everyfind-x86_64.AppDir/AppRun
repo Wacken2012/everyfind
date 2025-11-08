@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+APPDIR="$(dirname "$(readlink -f "$0")")"
+export PATH="$APPDIR/usr/bin:$PATH"
+export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
+
+# Activate virtualenv shipped inside AppDir
+if [ -f "$APPDIR/usr/venv/bin/activate" ]; then
+    # shellcheck disable=SC1090
+    source "$APPDIR/usr/venv/bin/activate"
+fi
+
+# Dispatch to CLI or GUI depending on args
+if [ "$#" -gt 0 ]; then
+    case "$1" in
+        index|search|stats|clear|--cli)
+            exec python3 -m everyfind.cli "$@"
+            ;;
+    esac
+fi
+
+# Default: start GUI
+exec python3 -m everyfind.ui "$@"

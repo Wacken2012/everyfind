@@ -1,0 +1,3 @@
+[console_scripts]
+everyfind = everyfind.cli:main
+everyfind-gui = everyfind.ui:run_gui
