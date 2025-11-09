@@ -188,7 +188,13 @@ DESK_EOF
     # Include locale files for translations
     if [ -d "locale" ]; then
         echo "Copying locale files for i18n support..."
-        cp -r locale "${APPDIR}/usr/share/locale"
+        mkdir -p "${APPDIR}/usr/share/locale"
+        # Copy only language directories, not README.txt
+        for lang in locale/*/; do
+            if [ -d "$lang/LC_MESSAGES" ]; then
+                cp -r "$lang" "${APPDIR}/usr/share/locale/"
+            fi
+        done
         echo "Locale files copied to ${APPDIR}/usr/share/locale"
     else
         echo "Warning: No locale directory found; translations will not be available."
