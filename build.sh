@@ -29,7 +29,7 @@ set -euo pipefail
 
 APP_NAME="everyfind"
 APP_DISPLAY_NAME="Everyfind"
-APP_VERSION="0.1.0"
+APP_VERSION="0.1.1"
 BUILD_DIR="build"
 ASSETS_DIR="assets"
 

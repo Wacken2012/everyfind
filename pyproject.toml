@@ -1,6 +1,6 @@
 [project]
 name = "everyfind"
-version = "0.1.0"
+version = "0.1.1"
 description = "Ultra-fast file search for Linux with fzf and GTK"
 authors = [
     {name = "Stefan", email = "stefan@example.com"}
