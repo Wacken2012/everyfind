@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: everyfind 0.1.0\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# English translations (skeleton) - usually identical to source
+msgid "Indexing…"
+msgstr "Indexing…"
+
+msgid "Initializing indexing…"
+msgstr "Initializing indexing…"
+
+msgid "0 files indexed"
+msgstr "0 files indexed"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Cancelling…"
+msgstr "Cancelling…"
+
+msgid "Indexing: {filename}"
+msgstr "Indexing: {filename}"
+
+msgid "Cancelled"
+msgstr "Cancelled"
+
+msgid "Done"
+msgstr "Done"
+
+msgid "Close"
+msgstr "Close"

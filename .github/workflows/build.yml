@@ -39,6 +39,14 @@ jobs:
           pip install pytest
           PYTHONPATH=. pytest -q
 
+      - name: Compile translations
+        run: |
+          mkdir -p locale/de/LC_MESSAGES locale/en/LC_MESSAGES
+          msgfmt po/de/everyfind.po -o locale/de/LC_MESSAGES/everyfind.mo
+          msgfmt po/en/everyfind.po -o locale/en/LC_MESSAGES/everyfind.mo
+          echo "Translation files compiled successfully"
+          ls -lh locale/*/LC_MESSAGES/
+
       - name: Build for x86_64 on-host
         if: matrix.arch == 'x86_64'
         run: |

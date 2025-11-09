@@ -120,6 +120,9 @@ APPDIR="$(dirname "$(readlink -f "$0")")"
 export PATH="$APPDIR/usr/bin:$PATH"
 export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
 
+# Set locale directory for gettext
+export TEXTDOMAINDIR="$APPDIR/usr/share/locale"
+
 # Activate virtualenv shipped inside AppDir
 if [ -f "$APPDIR/usr/venv/bin/activate" ]; then
     # shellcheck disable=SC1090
@@ -180,6 +183,15 @@ DESK_EOF
         echo "Included AppStream metadata: ${APPSTREAM_SRC}"
     else
         echo "No AppStream metadata found at ${APPSTREAM_SRC}; continuing without it."
+    fi
+
+    # Include locale files for translations
+    if [ -d "locale" ]; then
+        echo "Copying locale files for i18n support..."
+        cp -r locale "${APPDIR}/usr/share/locale"
+        echo "Locale files copied to ${APPDIR}/usr/share/locale"
+    else
+        echo "Warning: No locale directory found; translations will not be available."
     fi
 
     # Download appimagetool
