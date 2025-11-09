@@ -70,6 +70,42 @@ everyfind stats                          # Statistik über Index
 everyfind clear                          # Index löschen
 ```
 
+### 🔧 Konfiguration
+
+Everyfind speichert seine Einstellungen in `~/.config/everyfind/settings.json`. Diese Datei wird automatisch erstellt, wenn du die Einstellungen in der GUI änderst.
+
+Beispielkonfiguration:
+
+```json
+{
+  "indexed_paths": ["/home/stefan/Dokumente", "/home/stefan/Bilder"],
+  "file_filters": ["*.pdf", "*.txt", ".doc", ".odt"],
+  "excluded_paths": ["/home/stefan/Dokumente/temp", "/mnt", "/media"],
+  "auto_reindex": true,
+  "reindex_interval": 60,
+  "language": "de"
+}
+```
+
+**Erklärung der Optionen:**
+
+- **`indexed_paths`**: Liste von Verzeichnissen, die indexiert werden sollen
+- **`file_filters`**: Liste von Dateiendungen oder Wildcard-Mustern (z.B. `*.txt`, `.pdf`, `*.py`)
+  - Ohne Filters werden alle Dateien indexiert
+  - Wildcards: `*.txt` findet alle .txt-Dateien
+  - Einfache Endungen: `.pdf` oder `pdf` funktionieren beide
+- **`excluded_paths`**: Verzeichnispfade, die bei der Indexierung ignoriert werden
+  - Absolute Pfade oder Präfixe (z.B. `/mnt`, `/media`)
+  - Standardmäßig ausgeschlossen: `.git`, `__pycache__`, `.venv`, `node_modules`
+- **`auto_reindex`**: Beim Programmstart automatisch neu indexieren (true/false)
+- **`reindex_interval`**: Zeit in Minuten zwischen automatischen Neuindexierungen
+- **`language`**: Sprache der Benutzeroberfläche
+  - `"de"` für Deutsch
+  - `"en"` für Englisch
+  - `"system"` für Systemsprache
+
+Du kannst die Einstellungen entweder manuell in der JSON-Datei bearbeiten oder bequem über die GUI ändern (Menü → Einstellungen).
+
 Lizenz
 Dieses Projekt steht unter der GNU General Public License v3 (GPLv3). Siehe `LICENSE` im Repository.
 
@@ -117,6 +153,42 @@ everyfind gui                    # launch GTK GUI
 everyfind stats                  # show index stats
 everyfind clear                  # clear index
 ```
+
+### 🔧 Configuration
+
+Everyfind stores its settings in `~/.config/everyfind/settings.json`. This file is automatically created when you change settings in the GUI.
+
+Example configuration:
+
+```json
+{
+  "indexed_paths": ["/home/user/Documents", "/home/user/Pictures"],
+  "file_filters": ["*.pdf", "*.txt", ".doc", ".odt"],
+  "excluded_paths": ["/home/user/Documents/temp", "/mnt", "/media"],
+  "auto_reindex": true,
+  "reindex_interval": 60,
+  "language": "en"
+}
+```
+
+**Configuration options:**
+
+- **`indexed_paths`**: List of directories to index
+- **`file_filters`**: List of file extensions or wildcard patterns (e.g., `*.txt`, `.pdf`, `*.py`)
+  - Without filters, all files are indexed
+  - Wildcards: `*.txt` matches all .txt files
+  - Simple extensions: `.pdf` or `pdf` both work
+- **`excluded_paths`**: Directory paths to ignore during indexing
+  - Absolute paths or prefixes (e.g., `/mnt`, `/media`)
+  - Default exclusions: `.git`, `__pycache__`, `.venv`, `node_modules`
+- **`auto_reindex`**: Automatically reindex on program startup (true/false)
+- **`reindex_interval`**: Time in minutes between automatic reindexing
+- **`language`**: User interface language
+  - `"de"` for German
+  - `"en"` for English
+  - `"system"` for system language
+
+You can edit settings manually in the JSON file or conveniently change them via the GUI (Menu → Settings).
 
 License
 Everyfind is released under the GNU General Public License v3 (GPLv3). See `LICENSE`.

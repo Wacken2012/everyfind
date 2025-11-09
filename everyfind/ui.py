@@ -39,6 +39,101 @@ from .ui_settings import SettingsDialog
 logger = logging.getLogger(__name__)
 
 
+class IndexProgressDialog(Gtk.Dialog):
+    """Dialog showing indexing progress with cancel button."""
+    
+    def __init__(self, parent):
+        """
+        Initialize the progress dialog.
+        
+        Args:
+            parent: Parent GTK window
+        """
+        super().__init__(title="Indexierung läuft…", parent=parent, modal=True)
+        self.set_default_size(400, 150)
+        self.set_border_width(10)
+        
+        # Stop event for cancellation
+        self.stop_event = threading.Event()
+        self.cancelled = False
+        
+        # Create widgets
+        box = self.get_content_area()
+        box.set_spacing(10)
+        
+        # Status label
+        self.status_label = Gtk.Label(label="Initialisiere Indexierung…")
+        self.status_label.set_line_wrap(True)
+        box.pack_start(self.status_label, False, False, 0)
+        
+        # Progress bar
+        self.progress_bar = Gtk.ProgressBar()
+        self.progress_bar.set_show_text(True)
+        box.pack_start(self.progress_bar, False, False, 0)
+        
+        # File count label
+        self.file_label = Gtk.Label(label="0 Dateien indexiert")
+        box.pack_start(self.file_label, False, False, 0)
+        
+        # Cancel button
+        self.cancel_button = Gtk.Button(label="Abbrechen")
+        self.cancel_button.connect("clicked", self._on_cancel)
+        box.pack_start(self.cancel_button, False, False, 0)
+        
+        self.show_all()
+    
+    def _on_cancel(self, widget):
+        """Handle cancel button click."""
+        self.stop_event.set()
+        self.cancelled = True
+        self.status_label.set_text("Abbrechen…")
+        self.cancel_button.set_sensitive(False)
+    
+    def update_progress(self, count: int, current_path: str = ""):
+        """
+        Update progress display (called from indexer callback).
+        
+        Args:
+            count: Number of files indexed so far
+            current_path: Current file being indexed
+        """
+        def _update():
+            self.file_label.set_text(f"{count} Dateien indexiert")
+            if current_path:
+                # Show only filename to keep dialog clean
+                filename = Path(current_path).name
+                self.status_label.set_text(f"Indexiere: {filename}")
+            self.progress_bar.pulse()  # Indeterminate progress
+            return False
+        
+        GLib.idle_add(_update)
+    
+    def finish(self, count: int, cancelled: bool = False):
+        """
+        Mark indexing as finished.
+        
+        Args:
+            count: Total files indexed
+            cancelled: Whether indexing was cancelled
+        """
+        def _finish():
+            if cancelled:
+                self.status_label.set_text("Abgebrochen")
+                self.file_label.set_text(f"{count} Dateien indexiert (abgebrochen)")
+            else:
+                self.status_label.set_text("Fertig")
+                self.file_label.set_text(f"{count} Dateien indexiert")
+                self.progress_bar.set_fraction(1.0)
+            
+            self.cancel_button.set_label("Schließen")
+            self.cancel_button.set_sensitive(True)
+            self.cancel_button.disconnect_by_func(self._on_cancel)
+            self.cancel_button.connect("clicked", lambda w: self.destroy())
+            return False
+        
+        GLib.idle_add(_finish)
+
+
 class EveryfindWindow(Gtk.Window):
     """Main GTK window for Everyfind."""
     
@@ -170,17 +265,8 @@ class EveryfindWindow(Gtk.Window):
         # Apply settings: optionally start indexing
         try:
             if self.settings.get("auto_reindex") and self.settings.get("indexed_paths"):
-                def _run_index():
-                    filters = self.settings.get("file_filters", [])
-                    excludes = self.settings.get("excluded_paths", [])
-                    for p in self.settings.get("indexed_paths", []):
-                        try:
-                            self.indexer.index_directory(p, filters=filters, excludes=excludes)
-                        except Exception as e:
-                            logger.error(f"Indexing {p} failed: {e}")
-
-                t = threading.Thread(target=_run_index, daemon=True)
-                t.start()
+                # Show progress dialog and run indexing
+                self._run_indexing_with_progress(self.settings.get("indexed_paths", []))
         except Exception:
             pass
     
@@ -209,17 +295,7 @@ class EveryfindWindow(Gtk.Window):
                 self.settings = new_settings
                 # If there are new indexed paths and auto_reindex is enabled, index them
                 if new_settings.get("auto_reindex") and new_settings.get("indexed_paths"):
-                    def _run_index():
-                        filters = new_settings.get("file_filters", [])
-                        excludes = new_settings.get("excluded_paths", [])
-                        for p in new_settings.get("indexed_paths", []):
-                            try:
-                                self.indexer.index_directory(p, filters=filters, excludes=excludes)
-                            except Exception as e:
-                                logger.error(f"Indexing {p} failed: {e}")
-
-                    t = threading.Thread(target=_run_index, daemon=True)
-                    t.start()
+                    self._run_indexing_with_progress(new_settings.get("indexed_paths", []))
             except Exception as e:
                 logger.error(f"Failed to save settings: {e}")
 
@@ -379,6 +455,59 @@ class EveryfindWindow(Gtk.Window):
         dialog.format_secondary_text(details_text)
         dialog.run()
         dialog.destroy()
+    
+    def _run_indexing_with_progress(self, paths: List[str]):
+        """
+        Run indexing with progress dialog.
+        
+        Args:
+            paths: List of directory paths to index
+        """
+        if not paths:
+            return
+        
+        # Create progress dialog
+        progress_dialog = IndexProgressDialog(self)
+        
+        filters = self.settings.get("file_filters", [])
+        excludes = self.settings.get("excluded_paths", [])
+        
+        def _run_index():
+            """Background indexing thread."""
+            total_count = 0
+            try:
+                for p in paths:
+                    if progress_dialog.stop_event.is_set():
+                        break
+                    try:
+                        count = self.indexer.index_directory(
+                            p, 
+                            filters=filters, 
+                            excludes=excludes,
+                            progress_callback=lambda c, path: progress_dialog.update_progress(total_count + c, path),
+                            stop_event=progress_dialog.stop_event
+                        )
+                        total_count += count
+                    except Exception as e:
+                        logger.error(f"Indexing {p} failed: {e}")
+                
+                # Mark as finished
+                progress_dialog.finish(total_count, progress_dialog.cancelled)
+                
+                # Reload results in main window
+                GLib.idle_add(self._load_all_files)
+                
+            except Exception as e:
+                logger.error(f"Indexing thread error: {e}")
+                progress_dialog.finish(total_count, True)
+        
+        # Start indexing thread
+        t = threading.Thread(target=_run_index, daemon=True)
+        t.start()
+        
+        # Show dialog (blocks until closed)
+        progress_dialog.run()
+        progress_dialog.destroy()
     
     def _show_status(self, message: str):
         """Show a status message."""
