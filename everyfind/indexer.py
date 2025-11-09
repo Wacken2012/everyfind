@@ -105,6 +105,18 @@ class FileIndexer:
             )
             return [row[0] for row in cursor.fetchall()]
 
+    def search(self, pattern: str, limit: Optional[int] = None) -> List[str]:
+        """Compatibility wrapper for older API expecting `search`.
+
+        Args:
+            pattern: search substring or pattern
+            limit: optional result limit (returns first `limit` matches)
+        """
+        results = self.search_files(pattern)
+        if limit is not None:
+            return results[:limit]
+        return results
+
     def clear_index(self) -> None:
         """Clear all entries from the index."""
         if self.conn is None:
