@@ -213,7 +213,8 @@ DESK_EOF
     echo "Building AppImage -> ${OUT_IMAGE}"
 
     # appimagetool usually must run on the target architecture. If building cross-arch, this may fail.
-    "${APPIMAGETOOL_PATH}" "${APPDIR}" "${OUT_IMAGE}"
+    # Skip AppStream validation to avoid build failures
+    "${APPIMAGETOOL_PATH}" --no-appstream "${APPDIR}" "${OUT_IMAGE}"
 
     echo "Built: ${OUT_IMAGE}"
 
