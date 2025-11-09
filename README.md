@@ -60,6 +60,8 @@ chmod +x everyfind-0.1.0-x86_64.AppImage
 ./everyfind-0.1.0-x86_64.AppImage
 ```
 
+> ⚠️ **Hinweis zur Sprache im AppImage**: Das AppImage unterstützt derzeit nur Englisch. Für vollständige Mehrsprachigkeit bitte aus dem Quellcode installieren.
+
 #### Von Quellcode bauen
 
 1. Repository klonen und Build-Skript ausführen:
@@ -174,7 +176,34 @@ Möchtest du eine neue Sprache hinzufügen oder eine bestehende Übersetzung ver
 3. Teste die Übersetzung lokal
 4. Erstelle einen Pull Request!
 
-Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für detaillierte Anweisungen.
+Siehe [CONTRIBUTING.md#übersetzungen](CONTRIBUTING.md#übersetzungen-hinzufügen) für detaillierte Anweisungen.
+
+### 🛣️ Roadmap
+
+Geplante Features für zukünftige Versionen:
+
+#### v0.2.0
+- 🧰 **Plugin-System** – Erweiterbare Architektur
+  - OCR-Plugin für Texterkennung in Bildern/PDFs
+  - Dateivorschau-Plugin
+  - Cloud-Integration (Nextcloud, Google Drive)
+- 🧠 **Gewichtetes Ranking** – Intelligente Suchergebnisse basierend auf:
+  - Zugriffshäufigkeit
+  - Letzte Änderungen
+  - Dateinamen-Übereinstimmung
+- 🔍 **Erweiterte Suchfilter** – Größe, Datum, MIME-Type
+
+#### v0.3.0+
+- 📦 **Alternative Distributionen**
+  - Flatpak-Package
+  - Snap-Package
+  - AUR (Arch User Repository)
+- 🧪 **GUI-Tests** – Automatisierte UI-Tests mit pytest-gtk/dogtail
+- 🌐 **Community-Übersetzungen** – Weblate-Integration
+- 📊 **Erweiterte Statistiken** – Dashboard mit Visualisierungen
+- 🎨 **Themes** – Dunkles Design, benutzerdefinierte Farbschemata
+
+Hast du Feature-Wünsche? [Erstelle ein Feature-Request](https://github.com/Wacken2012/everyfind/issues/new?labels=enhancement)!
 
 ### 📜 Lizenz
 
@@ -236,6 +265,8 @@ The architecture of this project was co-designed with AI (Microsoft Copilot). Po
 chmod +x everyfind-0.1.0-x86_64.AppImage
 ./everyfind-0.1.0-x86_64.AppImage
 ```
+
+> ⚠️ **AppImage Language Support**: The AppImage currently supports English only. For full multilingual support, please install from source.
 
 #### Build from Source
 
@@ -342,7 +373,7 @@ You can change the language in Settings:
 3. Select your language from the dropdown
 4. Click **Save** and restart Everyfind
 
-#### Contributing Translations
+#### Contributing to Translations
 
 Want to add a new language or improve an existing translation?
 
@@ -351,7 +382,34 @@ Want to add a new language or improve an existing translation?
 3. Test the translation locally
 4. Create a pull request!
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
+See [CONTRIBUTING.md#adding-translations](CONTRIBUTING.md#adding-translations) for detailed instructions.
+
+### 🛣️ Roadmap
+
+Planned features for future versions:
+
+#### v0.2.0
+- 🧰 **Plugin System** – Extensible architecture
+  - OCR plugin for text recognition in images/PDFs
+  - File preview plugin
+  - Cloud integration (Nextcloud, Google Drive)
+- 🧠 **Weighted Ranking** – Smart search results based on:
+  - Access frequency
+  - Recent modifications
+  - Filename match quality
+- 🔍 **Advanced Search Filters** – Size, date, MIME type
+
+#### v0.3.0+
+- 📦 **Alternative Distributions**
+  - Flatpak package
+  - Snap package
+  - AUR (Arch User Repository)
+- 🧪 **GUI Tests** – Automated UI testing with pytest-gtk/dogtail
+- 🌐 **Community Translations** – Weblate integration
+- 📊 **Extended Statistics** – Dashboard with visualizations
+- 🎨 **Themes** – Dark mode, custom color schemes
+
+Have a feature request? [Create a feature request](https://github.com/Wacken2012/everyfind/issues/new?labels=enhancement)!
 
 ### 📜 License
 
