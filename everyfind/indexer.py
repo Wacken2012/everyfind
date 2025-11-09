@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import os
 import sqlite3
 import logging
+import threading
 from pathlib import Path
 from typing import Optional, Generator, Callable, Iterable, List
 from datetime import datetime
@@ -46,11 +47,13 @@ class FileIndexer:
 
         self.db_path = Path(db_path)
         self.conn: Optional[sqlite3.Connection] = None
+        self._lock = threading.RLock()  # Reentrant lock for thread-safe operations
         self._init_database()
 
     def _init_database(self) -> None:
         """Initialize the SQLite database with required schema."""
-        self.conn = sqlite3.connect(str(self.db_path))
+        # check_same_thread=False allows usage across threads (needed for GTK worker threads)
+        self.conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
         cursor = self.conn.cursor()
 
         cursor.execute("""
@@ -80,9 +83,10 @@ class FileIndexer:
         if self.conn is None:
             raise RuntimeError("Database not initialized")
 
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT path FROM files ORDER BY filename")
-        return [row[0] for row in cursor.fetchall()]
+        with self._lock:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT path FROM files ORDER BY filename")
+            return [row[0] for row in cursor.fetchall()]
 
     def get_all_files(self) -> List[str]:
         """Alias for get_all_paths() for backward compatibility."""
@@ -93,28 +97,31 @@ class FileIndexer:
         if self.conn is None:
             raise RuntimeError("Database not initialized")
 
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "SELECT path FROM files WHERE filename LIKE ? OR path LIKE ? ORDER BY filename",
-            (f"%{pattern}%", f"%{pattern}%")
-        )
-        return [row[0] for row in cursor.fetchall()]
+        with self._lock:
+            cursor = self.conn.cursor()
+            cursor.execute(
+                "SELECT path FROM files WHERE filename LIKE ? OR path LIKE ? ORDER BY filename",
+                (f"%{pattern}%", f"%{pattern}%")
+            )
+            return [row[0] for row in cursor.fetchall()]
 
     def clear_index(self) -> None:
         """Clear all entries from the index."""
         if self.conn is None:
             raise RuntimeError("Database not initialized")
 
-        cursor = self.conn.cursor()
-        cursor.execute("DELETE FROM files")
-        self.conn.commit()
-        logger.info("Index cleared")
+        with self._lock:
+            cursor = self.conn.cursor()
+            cursor.execute("DELETE FROM files")
+            self.conn.commit()
+            logger.info("Index cleared")
 
     def close(self) -> None:
         """Close the database connection."""
-        if self.conn:
-            self.conn.close()
-            logger.info("Database connection closed")
+        with self._lock:
+            if self.conn:
+                self.conn.close()
+                logger.info("Database connection closed")
 
     def scan_directory(self, root_path: str, exclude_patterns: Optional[List[str]] = None,
                        filters: Optional[Iterable[str]] = None,
@@ -240,32 +247,33 @@ class FileIndexer:
         if self.conn is None:
             raise RuntimeError("Database not initialized")
 
-        cursor = self.conn.cursor()
-        indexed_count = 0
-        current_time = datetime.now().timestamp()
+        with self._lock:
+            cursor = self.conn.cursor()
+            indexed_count = 0
+            current_time = datetime.now().timestamp()
 
-        for info in self.scan_directory(root_path, exclude_patterns=exclude_patterns,
-                                        filters=filters, excludes=excludes,
-                                        progress_callback=progress_callback,
-                                        stop_event=stop_event):
-            try:
-                cursor.execute(
-                    "INSERT OR REPLACE INTO files (path, filename, size, modified, indexed_at) VALUES (?, ?, ?, ?, ?)",
-                    (info['path'], info['filename'], info['size'], info['modified'], current_time)
-                )
-                indexed_count += 1
+            for info in self.scan_directory(root_path, exclude_patterns=exclude_patterns,
+                                            filters=filters, excludes=excludes,
+                                            progress_callback=progress_callback,
+                                            stop_event=stop_event):
+                try:
+                    cursor.execute(
+                        "INSERT OR REPLACE INTO files (path, filename, size, modified, indexed_at) VALUES (?, ?, ?, ?, ?)",
+                        (info['path'], info['filename'], info['size'], info['modified'], current_time)
+                    )
+                    indexed_count += 1
 
-                if indexed_count % 1000 == 0:
-                    self.conn.commit()
-                    logger.info(f"Indexed {indexed_count} files...")
+                    if indexed_count % 1000 == 0:
+                        self.conn.commit()
+                        logger.info(f"Indexed {indexed_count} files...")
 
-            except sqlite3.Error as e:
-                logger.error(f"Database error for {info.get('path')}: {e}")
-                continue
+                except sqlite3.Error as e:
+                    logger.error(f"Database error for {info.get('path')}: {e}")
+                    continue
 
-        self.conn.commit()
-        logger.info(f"Indexing complete. Total files indexed: {indexed_count}")
-        return indexed_count
+            self.conn.commit()
+            logger.info(f"Indexing complete. Total files indexed: {indexed_count}")
+            return indexed_count
 
     def index(self, root_path: str, **kwargs) -> int:
         """Alias for index_directory() for backward compatibility."""
