@@ -2,12 +2,22 @@ Source: everyfind
 Section: utils
 Priority: optional
 Maintainer: Stefan <stefan@example.com>
-Build-Depends: debhelper (>= 11), dh-python, python3-all, python3-setuptools
+Build-Depends: debhelper (>= 11), dh-python, python3-all, python3-setuptools, gettext, pybuild-plugin-pyproject
 Standards-Version: 4.5.0
 Homepage: https://github.com/Wacken2012/everyfind
 
 Package: everyfind
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python3, python3-gi
-Description: Ultra-fast file search for Linux (Everyfind)
- Everyfind is a fast file search tool using fzf and a GTK GUI.
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}, python3 (>= 3.10), python3-gi, gir1.2-gtk-3.0, python3-pip, fzf, gettext
+Description: Ultra-fast file search for Linux with multilingual GTK GUI
+ Everyfind is a blazing-fast file search tool for Linux, inspired by
+ "Everything" on Windows. It combines fzf speed with a GTK interface.
+ .
+ Features:
+  - Lightning-fast fuzzy search powered by fzf
+  - Dual interfaces: CLI and GTK GUI
+  - Multilingual support (German, English, French, Spanish, Polish)
+  - SQLite indexing for instant results
+  - Configurable filters and auto-reindexing
+  - Raspberry Pi compatible (ARM support)
+

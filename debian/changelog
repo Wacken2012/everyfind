@@ -1,5 +1,13 @@
 everyfind (0.1.0-1) unstable; urgency=medium
 
-  * Initial package
+  * Initial release (Closes: #XXXXXX)
+  * Multilingual support (German, English, French, Spanish, Polish)
+  * GTK GUI with settings dialog
+  * CLI interface with fzf fuzzy search
+  * SQLite indexing with auto-reindex
+  * Configurable file filters and exclusions
+  * Desktop integration with .desktop file
+  * AppImage and Debian package support
 
- -- Stefan <stefan@example.com>  Sun, 09 Nov 2025 00:00:00 +0000
+ -- Stefan <stefan@example.com>  Sat, 09 Nov 2025 14:30:00 +0100
+

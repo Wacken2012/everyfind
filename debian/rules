@@ -1,4 +1,21 @@
 #!/usr/bin/make -f
-%:
 
-dh $@ --with python3
+export PYBUILD_NAME=everyfind
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+	# Compile translations
+	for lang in de en fr es pl; do \
+		mkdir -p debian/everyfind/usr/share/locale/$$lang/LC_MESSAGES; \
+		msgfmt po/$$lang/everyfind.po -o debian/everyfind/usr/share/locale/$$lang/LC_MESSAGES/everyfind.mo; \
+	done
+	# Install desktop file
+	mkdir -p debian/everyfind/usr/share/applications
+	cp everyfind.desktop debian/everyfind/usr/share/applications/
+	# Install AppStream metadata
+	mkdir -p debian/everyfind/usr/share/metainfo
+	cp assets/everyfind.appdata.xml debian/everyfind/usr/share/metainfo/
+
