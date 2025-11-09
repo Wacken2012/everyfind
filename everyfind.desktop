@@ -2,7 +2,7 @@
 Type=Application
 Name=Everyfind
 Comment=Ultra-fast file search for Linux
-Exec=AppRun
+Exec=everyfind-gui
 Icon=everyfind
 Categories=Utility;FileManager;Developer;
 Terminal=false
