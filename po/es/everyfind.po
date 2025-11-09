@@ -1,0 +1,104 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: everyfind 0.1.0\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Spanish translations
+msgid "Indexing…"
+msgstr "Indexando…"
+
+msgid "Initializing indexing…"
+msgstr "Inicializando indexación…"
+
+msgid "0 files indexed"
+msgstr "0 archivos indexados"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Cancelling…"
+msgstr "Cancelando…"
+
+msgid "Indexing: {filename}"
+msgstr "Indexando: {filename}"
+
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgid "Done"
+msgstr "Hecho"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Settings"
+msgstr "Configuración"
+
+msgid "Indexed Directories"
+msgstr "Directorios indexados"
+
+msgid "Add Directory"
+msgstr "Añadir directorio"
+
+msgid "Remove"
+msgstr "Eliminar"
+
+msgid "File Filters"
+msgstr "Filtros de archivos"
+
+msgid "Excluded Paths"
+msgstr "Rutas excluidas"
+
+msgid "Auto-reindex"
+msgstr "Reindexación automática"
+
+msgid "Reindex interval (minutes)"
+msgstr "Intervalo de reindexación (minutos)"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "System default"
+msgstr "Predeterminado del sistema"
+
+msgid "Reset to Defaults"
+msgstr "Restablecer valores predeterminados"
+
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "Select Directory"
+msgstr "Seleccionar directorio"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "Reindex Now"
+msgstr "Reindexar ahora"
+
+msgid "Quit"
+msgstr "Salir"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Open in Terminal"
+msgstr "Abrir en terminal"
+
+msgid "Copy Path"
+msgstr "Copiar ruta"
+
+msgid "Show Details"
+msgstr "Mostrar detalles"
+
+msgid "Search files…"
+msgstr "Buscar archivos…"
+
+msgid "No results"
+msgstr "Sin resultados"
+
+msgid "Everyfind"
+msgstr "Everyfind"

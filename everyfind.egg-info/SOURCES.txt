@@ -13,3 +13,4 @@ everyfind.egg-info/dependency_links.txt
 everyfind.egg-info/entry_points.txt
 everyfind.egg-info/requires.txt
 everyfind.egg-info/top_level.txt
+tests/test_indexer.py

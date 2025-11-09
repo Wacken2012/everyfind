@@ -1,9 +1,3 @@
-git clone https://github.com/deinname/everyfind.git
-everyfind index /pfad/zum/durchsuchen
-git clone https://github.com/deinname/everyfind.git
-everyfind index /pfad/zum/durchsuchen
-everyfind search
-everyfind gui
 <!--
 Everyfind – ultraschnelle Dateisuche für Linux
 Copyright (C) 2025 Stefan
@@ -16,7 +10,7 @@ the Free Software Foundation, either version 3 of the License, or
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+# GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
@@ -25,33 +19,58 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 # Everyfind
 
 [![Build](https://github.com/Wacken2012/everyfind/actions/workflows/build.yml/badge.svg)](https://github.com/Wacken2012/everyfind/actions/workflows/build.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/Wacken2012/everyfind/releases)
 
-🇩🇪 Deutsch | 🇬🇧 English
+🇩🇪 [Deutsch](#-deutsch) | 🇬🇧 [English](#-english)
+
+---
 
 ## 🇩🇪 Deutsch
 
 Everyfind ist eine ultraschnelle Dateisuche für Linux, inspiriert von "Everything" unter Windows. Es kombiniert die Geschwindigkeit von `fzf` mit einer GTK-Oberfläche und bietet sowohl eine CLI- als auch eine GUI-Oberfläche.
 
-Features
-- CLI- und GUI-Modus (GTK)
-- Fuzzy-Suche mit `fzf` (über PTY)
-- Schnelle Indexierung mit SQLite
-- AppImage-fähig, Raspberry Pi tauglich (ARM)
+### ✨ Features
 
-Hinweis zur Entstehung
+- **🚀 Ultraschnelle Suche** mit `fzf` (Fuzzy-Suche über PTY)
+- **🖥️ Zwei Modi**: Kommandozeile (CLI) und grafische Oberfläche (GTK)
+- **💾 Effiziente Indexierung** mit SQLite
+- **🌍 Mehrsprachig**: Deutsch, Englisch, Französisch, Spanisch, Polnisch
+- **📦 AppImage-fähig** – portable Installation ohne root
+- **🍓 Raspberry Pi kompatibel** (ARM-Unterstützung)
+- **⚙️ Hochgradig konfigurierbar** – Dateifilter, Ausschlüsse, Auto-Reindex
+
+### 🤖 Hinweis zur Entstehung
+
 Die Architektur dieses Projekts wurde gemeinsam mit einer KI (Microsoft Copilot) entworfen. Teile des Codes wurden mithilfe von GitHub Copilot in VS Code generiert. Alle von Copilot erzeugten Teile wurden überprüft und angepasst.
 
-Installation (lokal)
+### 📥 Installation
 
-1. Klonen und Build-Skript ausführen (erzeugt AppImage):
+#### AppImage (empfohlen)
+
+1. Lade das AppImage für deine Architektur herunter:
+   - [everyfind-0.1.0-x86_64.AppImage](https://github.com/Wacken2012/everyfind/releases/latest)
+   - [everyfind-0.1.0-aarch64.AppImage](https://github.com/Wacken2012/everyfind/releases/latest) (ARM64)
+   - [everyfind-0.1.0-armv7.AppImage](https://github.com/Wacken2012/everyfind/releases/latest) (ARM32)
+
+2. Mache es ausführbar und starte es:
 
 ```bash
-git clone https://github.com/yourname/everyfind.git
-cd everyfind
-./build.sh x86_64      # oder: ./build.sh aarch64
+chmod +x everyfind-0.1.0-x86_64.AppImage
+./everyfind-0.1.0-x86_64.AppImage
 ```
 
-2. Entwicklung (virtuelle Umgebung):
+#### Von Quellcode bauen
+
+1. Repository klonen und Build-Skript ausführen:
+
+```bash
+git clone https://github.com/Wacken2012/everyfind.git
+cd everyfind
+./build.sh x86_64      # oder: ./build.sh aarch64 / armv7
+```
+
+2. Für Entwicklung (virtuelle Umgebung):
 
 ```bash
 python3 -m venv .venv
@@ -60,82 +79,175 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-Häufige Befehle
+### 🚀 Nutzung
+
+#### Häufige Befehle
 
 ```bash
-everyfind index /pfad/zum/durchsuchen    # Index erstellen
-everyfind search                         # Interaktive fzf-Suche (CLI)
-everyfind gui                            # GTK-GUI starten
-everyfind stats                          # Statistik über Index
-everyfind clear                          # Index löschen
+# Index erstellen für Verzeichnis
+everyfind index /pfad/zum/durchsuchen
+
+# Interaktive Suche in der Kommandozeile
+everyfind search
+
+# GUI starten
+everyfind gui
+
+# Index-Statistiken anzeigen
+everyfind stats
+
+# Index löschen
+everyfind clear
 ```
+
+#### GUI-Modus
+
+Im GUI-Modus kannst du:
+- Dateien durch Fuzzy-Suche finden
+- Doppelklick zum Öffnen von Dateien
+- Rechtsklick-Kontextmenü:
+  - Datei öffnen
+  - In Terminal öffnen
+  - Pfad kopieren
+  - Details anzeigen
+- Einstellungen konfigurieren (Menü → Einstellungen)
 
 ### 🔧 Konfiguration
 
 Everyfind speichert seine Einstellungen in `~/.config/everyfind/settings.json`. Diese Datei wird automatisch erstellt, wenn du die Einstellungen in der GUI änderst.
 
-Beispielkonfiguration:
+#### Beispielkonfiguration
 
 ```json
 {
   "indexed_paths": ["/home/stefan/Dokumente", "/home/stefan/Bilder"],
-  "file_filters": ["*.pdf", "*.txt", ".doc", ".odt"],
+  "file_filters": ["*.pdf", "*.txt", "*.doc", "*.odt"],
   "excluded_paths": ["/home/stefan/Dokumente/temp", "/mnt", "/media"],
   "auto_reindex": true,
-  "reindex_interval": 60,
+  "reindex_interval_minutes": 60,
   "language": "de"
 }
 ```
 
-**Erklärung der Optionen:**
+#### Erklärung der Optionen
 
 - **`indexed_paths`**: Liste von Verzeichnissen, die indexiert werden sollen
-- **`file_filters`**: Liste von Dateiendungen oder Wildcard-Mustern (z.B. `*.txt`, `.pdf`, `*.py`)
-  - Ohne Filters werden alle Dateien indexiert
-  - Wildcards: `*.txt` findet alle .txt-Dateien
-  - Einfache Endungen: `.pdf` oder `pdf` funktionieren beide
-- **`excluded_paths`**: Verzeichnispfade, die bei der Indexierung ignoriert werden
-  - Absolute Pfade oder Präfixe (z.B. `/mnt`, `/media`)
-  - Standardmäßig ausgeschlossen: `.git`, `__pycache__`, `.venv`, `node_modules`
-- **`auto_reindex`**: Beim Programmstart automatisch neu indexieren (true/false)
-- **`reindex_interval`**: Zeit in Minuten zwischen automatischen Neuindexierungen
+- **`file_filters`**: Liste von Dateiendungen oder Wildcard-Mustern
+  - Beispiele: `*.txt`, `.pdf`, `*.py`
+  - Ohne Filter werden alle Dateien indexiert
+- **`excluded_paths`**: Verzeichnisse, die ignoriert werden
+  - Standard-Ausschlüsse: `.git`, `__pycache__`, `.venv`, `node_modules`
+- **`auto_reindex`**: Automatische Neuindexierung beim Start (true/false)
+- **`reindex_interval_minutes`**: Minuten zwischen Auto-Reindex
 - **`language`**: Sprache der Benutzeroberfläche
-  - `"de"` für Deutsch
-  - `"en"` für Englisch
-  - `"system"` für Systemsprache
+  - `"system"` – Systemsprache (Standard)
+  - `"de"` – Deutsch
+  - `"en"` – Englisch
+  - `"fr"` – Französisch
+  - `"es"` – Spanisch
+  - `"pl"` – Polnisch
 
-Du kannst die Einstellungen entweder manuell in der JSON-Datei bearbeiten oder bequem über die GUI ändern (Menü → Einstellungen).
+### 🌍 Übersetzungen
 
-Lizenz
-Dieses Projekt steht unter der GNU General Public License v3 (GPLv3). Siehe `LICENSE` im Repository.
+Everyfind ist mehrsprachig! Die Benutzeroberfläche ist in folgenden Sprachen verfügbar:
 
-Mitwirken
-Wenn du beitragen möchtest, siehe `CONTRIBUTING.md` für Hinweise zum Entwicklungsworkflow, Code-Stil und Pull-Requests.
+- 🇩🇪 **Deutsch** (de)
+- 🇬🇧 **Englisch** (en)
+- 🇫🇷 **Französisch** (fr)
+- 🇪�� **Spanisch** (es)
+- 🇵🇱 **Polnisch** (pl)
+
+#### Sprache ändern
+
+Du kannst die Sprache in den Einstellungen ändern:
+1. Öffne die GUI: `everyfind gui`
+2. Gehe zu **Datei** → **Einstellungen**
+3. Wähle deine Sprache im Dropdown-Menü
+4. Klicke auf **Speichern** und starte Everyfind neu
+
+#### Mitwirken bei Übersetzungen
+
+Möchtest du eine neue Sprache hinzufügen oder eine bestehende Übersetzung verbessern?
+
+1. Erstelle/bearbeite eine `.po`-Datei in `po/<sprachcode>/everyfind.po`
+2. Kompiliere sie mit `msgfmt po/<sprachcode>/everyfind.po -o locale/<sprachcode>/LC_MESSAGES/everyfind.mo`
+3. Teste die Übersetzung lokal
+4. Erstelle einen Pull Request!
+
+Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für detaillierte Anweisungen.
+
+### 📜 Lizenz
+
+Dieses Projekt steht unter der **GNU General Public License v3** (GPLv3).  
+Siehe [LICENSE](LICENSE) für Details.
+
+#### Lizenzhinweise für gebündelte Komponenten
+
+- **fzf**: MIT License
+- **PyGObject**: LGPL
+- **SQLite**: Public Domain
+
+Bei Fragen zur Lizenzierung öffne bitte ein Issue.
+
+### 🤝 Mitwirken
+
+Beiträge sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für:
+- Entwicklungs-Workflow
+- Code-Stil-Richtlinien
+- Pull-Request-Prozess
+
+### 📫 Kontakt & Support
+
+- **Issues**: [GitHub Issues](https://github.com/Wacken2012/everyfind/issues)
+- **Diskussionen**: [GitHub Discussions](https://github.com/Wacken2012/everyfind/discussions)
+
+---
 
 ## 🇬🇧 English
 
 Everyfind is a blazing-fast file search tool for Linux, inspired by "Everything" on Windows. It combines `fzf` speed with a GTK interface and provides both CLI and GUI frontends.
 
-Features
-- CLI and GUI (GTK)
-- Fuzzy search powered by `fzf` (via PTY)
-- Fast indexing using SQLite
-- AppImage-ready, Raspberry Pi (ARM) support
+### ✨ Features
 
-Note on development
+- **🚀 Lightning-fast search** powered by `fzf` (fuzzy search via PTY)
+- **🖥️ Dual interfaces**: Command-line (CLI) and graphical (GTK)
+- **�� Efficient indexing** using SQLite
+- **🌍 Multilingual**: German, English, French, Spanish, Polish
+- **📦 AppImage-ready** – portable installation without root
+- **🍓 Raspberry Pi compatible** (ARM support)
+- **⚙️ Highly configurable** – file filters, exclusions, auto-reindex
+
+### 🤖 Note on Development
+
 The architecture of this project was co-designed with AI (Microsoft Copilot). Portions of the code were generated using GitHub Copilot in VS Code and have been reviewed and adapted.
 
-Installation (local)
+### 📥 Installation
 
-1. Clone and run the build script (produces AppImage):
+#### AppImage (recommended)
+
+1. Download the AppImage for your architecture:
+   - [everyfind-0.1.0-x86_64.AppImage](https://github.com/Wacken2012/everyfind/releases/latest)
+   - [everyfind-0.1.0-aarch64.AppImage](https://github.com/Wacken2012/everyfind/releases/latest) (ARM64)
+   - [everyfind-0.1.0-armv7.AppImage](https://github.com/Wacken2012/everyfind/releases/latest) (ARM32)
+
+2. Make it executable and run:
 
 ```bash
-git clone https://github.com/yourname/everyfind.git
-cd everyfind
-./build.sh x86_64      # or: ./build.sh aarch64
+chmod +x everyfind-0.1.0-x86_64.AppImage
+./everyfind-0.1.0-x86_64.AppImage
 ```
 
-2. Development (virtualenv):
+#### Build from Source
+
+1. Clone the repository and run the build script:
+
+```bash
+git clone https://github.com/Wacken2012/everyfind.git
+cd everyfind
+./build.sh x86_64      # or: ./build.sh aarch64 / armv7
+```
+
+2. For development (virtual environment):
 
 ```bash
 python3 -m venv .venv
@@ -144,67 +256,136 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-Common commands
+### 🚀 Usage
+
+#### Common Commands
 
 ```bash
-everyfind index /path/to/index   # create index
-everyfind search                 # interactive fzf search (CLI)
-everyfind gui                    # launch GTK GUI
-everyfind stats                  # show index stats
-everyfind clear                  # clear index
+# Index a directory
+everyfind index /path/to/index
+
+# Interactive CLI search
+everyfind search
+
+# Launch GUI
+everyfind gui
+
+# Show index statistics
+everyfind stats
+
+# Clear index
+everyfind clear
 ```
+
+#### GUI Mode
+
+In GUI mode, you can:
+- Find files using fuzzy search
+- Double-click to open files
+- Right-click context menu:
+  - Open file
+  - Open in terminal
+  - Copy path
+  - Show details
+- Configure settings (Menu → Settings)
 
 ### 🔧 Configuration
 
 Everyfind stores its settings in `~/.config/everyfind/settings.json`. This file is automatically created when you change settings in the GUI.
 
-Example configuration:
+#### Example Configuration
 
 ```json
 {
   "indexed_paths": ["/home/user/Documents", "/home/user/Pictures"],
-  "file_filters": ["*.pdf", "*.txt", ".doc", ".odt"],
+  "file_filters": ["*.pdf", "*.txt", "*.doc", "*.odt"],
   "excluded_paths": ["/home/user/Documents/temp", "/mnt", "/media"],
   "auto_reindex": true,
-  "reindex_interval": 60,
+  "reindex_interval_minutes": 60,
   "language": "en"
 }
 ```
 
-**Configuration options:**
+#### Configuration Options
 
 - **`indexed_paths`**: List of directories to index
-- **`file_filters`**: List of file extensions or wildcard patterns (e.g., `*.txt`, `.pdf`, `*.py`)
+- **`file_filters`**: List of file extensions or wildcard patterns
+  - Examples: `*.txt`, `.pdf`, `*.py`
   - Without filters, all files are indexed
-  - Wildcards: `*.txt` matches all .txt files
-  - Simple extensions: `.pdf` or `pdf` both work
-- **`excluded_paths`**: Directory paths to ignore during indexing
-  - Absolute paths or prefixes (e.g., `/mnt`, `/media`)
+- **`excluded_paths`**: Directories to ignore
   - Default exclusions: `.git`, `__pycache__`, `.venv`, `node_modules`
-- **`auto_reindex`**: Automatically reindex on program startup (true/false)
-- **`reindex_interval`**: Time in minutes between automatic reindexing
+- **`auto_reindex`**: Automatically reindex on startup (true/false)
+- **`reindex_interval_minutes`**: Minutes between auto-reindex
 - **`language`**: User interface language
-  - `"de"` for German
-  - `"en"` for English
-  - `"system"` for system language
+  - `"system"` – System language (default)
+  - `"de"` – German
+  - `"en"` – English
+  - `"fr"` – French
+  - `"es"` – Spanish
+  - `"pl"` – Polish
 
-You can edit settings manually in the JSON file or conveniently change them via the GUI (Menu → Settings).
+### 🌍 Translations
 
-License
-Everyfind is released under the GNU General Public License v3 (GPLv3). See `LICENSE`.
+Everyfind is multilingual! The user interface is available in:
 
-Contributing
-See `CONTRIBUTING.md` for contribution guidelines, coding style, and the pull request workflow.
+- 🇬🇧 **English** (en)
+- 🇩🇪 **German** (de)
+- 🇫🇷 **French** (fr)
+- 🇪🇸 **Spanish** (es)
+- 🇵🇱 **Polish** (pl)
+
+#### Changing Language
+
+You can change the language in Settings:
+1. Open the GUI: `everyfind gui`
+2. Go to **File** → **Settings**
+3. Select your language from the dropdown
+4. Click **Save** and restart Everyfind
+
+#### Contributing Translations
+
+Want to add a new language or improve an existing translation?
+
+1. Create/edit a `.po` file in `po/<language_code>/everyfind.po`
+2. Compile it with `msgfmt po/<language_code>/everyfind.po -o locale/<language_code>/LC_MESSAGES/everyfind.mo`
+3. Test the translation locally
+4. Create a pull request!
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
+
+### 📜 License
+
+This project is released under the **GNU General Public License v3** (GPLv3).  
+See [LICENSE](LICENSE) for details.
+
+#### License Notes for Bundled Components
+
+- **fzf**: MIT License
+- **PyGObject**: LGPL
+- **SQLite**: Public Domain
+
+If you have questions about licensing, please open an issue.
+
+### 🤝 Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development workflow
+- Code style guidelines
+- Pull request process
+
+### 📫 Contact & Support
+
+- **Issues**: [GitHub Issues](https://github.com/Wacken2012/everyfind/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Wacken2012/everyfind/discussions)
 
 ---
 
 ## 🖼️ Screenshots
 
-### Hauptfenster
+### Main Window / Hauptfenster
 
-![Everyfind Hauptfenster](assets/screenshots/everyfind-main.png)
+![Everyfind Main Window](assets/screenshots/everyfind-main.png)
 
-### Dateidetails
+---
 
-![Details-Dialog](assets/screenshots/everyfind-details.png)
-If you use or distribute Everyfind, please respect the licenses of bundled components (e.g., fzf: MIT, PyGObject: LGPL, SQLite: Public Domain). If you have questions about licensing, open an issue.
+**Made with ❤️ and 🤖 for the Linux community**

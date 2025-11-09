@@ -1,0 +1,13 @@
+Source: everyfind
+Section: utils
+Priority: optional
+Maintainer: Stefan <stefan@example.com>
+Build-Depends: debhelper (>= 11), dh-python, python3-all, python3-setuptools
+Standards-Version: 4.5.0
+Homepage: https://github.com/Wacken2012/everyfind
+
+Package: everyfind
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3, python3-gi
+Description: Ultra-fast file search for Linux (Everyfind)
+ Everyfind is a fast file search tool using fzf and a GTK GUI.

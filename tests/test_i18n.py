@@ -31,13 +31,10 @@ import pytest
 
 def test_locale_files_exist():
     """Test that .mo files exist in locale directory."""
-    # Check German locale
-    de_mo_path = os.path.join("locale", "de", "LC_MESSAGES", "everyfind.mo")
-    assert os.path.exists(de_mo_path), f"German .mo file not found at {de_mo_path}"
-    
-    # Check English locale
-    en_mo_path = os.path.join("locale", "en", "LC_MESSAGES", "everyfind.mo")
-    assert os.path.exists(en_mo_path), f"English .mo file not found at {en_mo_path}"
+    locales = ["de", "en", "fr", "es", "pl"]
+    for locale_code in locales:
+        mo_path = os.path.join("locale", locale_code, "LC_MESSAGES", "everyfind.mo")
+        assert os.path.exists(mo_path), f"{locale_code.upper()} .mo file not found at {mo_path}"
 
 
 def test_gettext_german_translation():
@@ -131,6 +128,45 @@ def test_missing_translation_fallback():
     # Should return the original string as fallback
     assert non_existent == "This string does not exist in any .po file xyz123", \
         "Missing translations should fall back to original string"
+
+
+def test_gettext_french_translation():
+    """Test that French translations load correctly."""
+    locale_dir = os.path.abspath("locale")
+    
+    fr_trans = gettext.translation('everyfind', localedir=locale_dir, languages=['fr'])
+    _ = fr_trans.gettext
+    
+    # Test "Cancel" which should be "Annuler" in French
+    cancel_translation = _("Cancel")
+    assert cancel_translation == "Annuler", \
+        f"Expected 'Annuler' but got '{cancel_translation}'"
+
+
+def test_gettext_spanish_translation():
+    """Test that Spanish translations load correctly."""
+    locale_dir = os.path.abspath("locale")
+    
+    es_trans = gettext.translation('everyfind', localedir=locale_dir, languages=['es'])
+    _ = es_trans.gettext
+    
+    # Test "Cancel" which should be "Cancelar" in Spanish
+    cancel_translation = _("Cancel")
+    assert cancel_translation == "Cancelar", \
+        f"Expected 'Cancelar' but got '{cancel_translation}'"
+
+
+def test_gettext_polish_translation():
+    """Test that Polish translations load correctly."""
+    locale_dir = os.path.abspath("locale")
+    
+    pl_trans = gettext.translation('everyfind', localedir=locale_dir, languages=['pl'])
+    _ = pl_trans.gettext
+    
+    # Test "Cancel" which should be "Anuluj" in Polish
+    cancel_translation = _("Cancel")
+    assert cancel_translation == "Anuluj", \
+        f"Expected 'Anuluj' but got '{cancel_translation}'"
 
 
 if __name__ == "__main__":

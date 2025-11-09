@@ -41,9 +41,12 @@ jobs:
 
       - name: Compile translations
         run: |
-          mkdir -p locale/de/LC_MESSAGES locale/en/LC_MESSAGES
+          mkdir -p locale/de/LC_MESSAGES locale/en/LC_MESSAGES locale/fr/LC_MESSAGES locale/es/LC_MESSAGES locale/pl/LC_MESSAGES
           msgfmt po/de/everyfind.po -o locale/de/LC_MESSAGES/everyfind.mo
           msgfmt po/en/everyfind.po -o locale/en/LC_MESSAGES/everyfind.mo
+          msgfmt po/fr/everyfind.po -o locale/fr/LC_MESSAGES/everyfind.mo
+          msgfmt po/es/everyfind.po -o locale/es/LC_MESSAGES/everyfind.mo
+          msgfmt po/pl/everyfind.po -o locale/pl/LC_MESSAGES/everyfind.mo
           echo "Translation files compiled successfully"
           ls -lh locale/*/LC_MESSAGES/
 
