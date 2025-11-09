@@ -37,9 +37,36 @@ Change the language in **Settings** → **Language** or set it via `settings.jso
 
 ## 📦 Downloads
 
-### AppImage (Recommended)
+### Debian Package (Recommended for Debian/Ubuntu)
 
-Choose your architecture:
+**Full multilingual support included!** 🌍
+
+| Format | Download | Size |
+|--------|----------|------|
+| **DEB** | [everyfind_0.1.0-1_all.deb](https://github.com/Wacken2012/everyfind/releases/download/v0.1.0/everyfind_0.1.0-1_all.deb) | 24 KB |
+
+**Installation:**
+```bash
+# Download the package
+wget https://github.com/Wacken2012/everyfind/releases/download/v0.1.0/everyfind_0.1.0-1_all.deb
+
+# Install (automatically resolves dependencies)
+sudo dpkg -i everyfind_0.1.0-1_all.deb
+sudo apt-get install -f
+
+# Run the application
+everyfind gui
+```
+
+**Advantages:**
+- ✅ Includes all 5 language translations
+- ✅ Desktop integration (application menu)
+- ✅ Automatic dependency management
+- ✅ Easy system-wide installation
+
+### AppImage (Portable)
+
+**For systems without package manager:**
 
 | Architecture | Download | Size |
 |--------------|----------|------|
@@ -54,7 +81,7 @@ chmod +x everyfind-0.1.0-x86_64.AppImage
 ./everyfind-0.1.0-x86_64.AppImage
 ```
 
-> ⚠️ **Note**: The AppImage currently supports **English only**. For full multilingual support, please [install from source](https://github.com/Wacken2012/everyfind#build-from-source).
+> ⚠️ **Note**: The AppImage currently supports **English only**. For full multilingual support, use the Debian package or [install from source](https://github.com/Wacken2012/everyfind#build-from-source).
 
 ### Build from Source
 
