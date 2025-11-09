@@ -23,7 +23,7 @@ import sqlite3
 import logging
 import threading
 from pathlib import Path
-from typing import Optional, Generator, Callable, Iterable, List
+from typing import Optional, Generator, Callable, Iterable, List, Union
 from datetime import datetime
 import fnmatch
 
@@ -235,7 +235,7 @@ class FileIndexer:
                     'modified': st.st_mtime
                 }
 
-    def index_directory(self, root_path: str, exclude_patterns: Optional[List[str]] = None,
+    def index_directory(self, root_path: Union[str, Iterable[str]], exclude_patterns: Optional[List[str]] = None,
                         filters: Optional[Iterable[str]] = None,
                         excludes: Optional[Iterable[str]] = None,
                         progress_callback: Optional[Callable[[int, str], None]] = None,
@@ -246,34 +246,49 @@ class FileIndexer:
         """
         if self.conn is None:
             raise RuntimeError("Database not initialized")
+        # Accept either a single path (str/Path) or an iterable of paths
+        if isinstance(root_path, (str, Path)):
+            paths = [root_path]
+        else:
+            try:
+                paths = list(root_path)
+            except Exception:
+                raise TypeError("root_path must be a string path or an iterable of paths")
 
-        with self._lock:
-            cursor = self.conn.cursor()
-            indexed_count = 0
-            current_time = datetime.now().timestamp()
+        total_indexed = 0
+        current_time = datetime.now().timestamp()
 
-            for info in self.scan_directory(root_path, exclude_patterns=exclude_patterns,
-                                            filters=filters, excludes=excludes,
-                                            progress_callback=progress_callback,
-                                            stop_event=stop_event):
-                try:
-                    cursor.execute(
-                        "INSERT OR REPLACE INTO files (path, filename, size, modified, indexed_at) VALUES (?, ?, ?, ?, ?)",
-                        (info['path'], info['filename'], info['size'], info['modified'], current_time)
-                    )
-                    indexed_count += 1
+        # Iterate over each provided path and index files
+        for p in paths:
+            with self._lock:
+                cursor = self.conn.cursor()
+                indexed_count = 0
 
-                    if indexed_count % 1000 == 0:
-                        self.conn.commit()
-                        logger.info(f"Indexed {indexed_count} files...")
+                for info in self.scan_directory(p, exclude_patterns=exclude_patterns,
+                                                filters=filters, excludes=excludes,
+                                                progress_callback=progress_callback,
+                                                stop_event=stop_event):
+                    try:
+                        cursor.execute(
+                            "INSERT OR REPLACE INTO files (path, filename, size, modified, indexed_at) VALUES (?, ?, ?, ?, ?)",
+                            (info['path'], info['filename'], info['size'], info['modified'], current_time)
+                        )
+                        indexed_count += 1
+                        total_indexed += 1
 
-                except sqlite3.Error as e:
-                    logger.error(f"Database error for {info.get('path')}: {e}")
-                    continue
+                        if indexed_count % 1000 == 0:
+                            self.conn.commit()
+                            logger.info(f"Indexed {indexed_count} files for {p}...")
 
-            self.conn.commit()
-            logger.info(f"Indexing complete. Total files indexed: {indexed_count}")
-            return indexed_count
+                    except sqlite3.Error as e:
+                        logger.error(f"Database error for {info.get('path')}: {e}")
+                        continue
+
+                self.conn.commit()
+                logger.info(f"Indexing complete for {p}. Files indexed: {indexed_count}")
+
+        logger.info(f"Indexing complete. Total files indexed: {total_indexed}")
+        return total_indexed
 
     def index(self, root_path: str, **kwargs) -> int:
         """Alias for index_directory() for backward compatibility."""
