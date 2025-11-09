@@ -84,6 +84,10 @@ class FileIndexer:
         cursor.execute("SELECT path FROM files ORDER BY filename")
         return [row[0] for row in cursor.fetchall()]
 
+    def get_all_files(self) -> List[str]:
+        """Alias for get_all_paths() for backward compatibility."""
+        return self.get_all_paths()
+
     def search_files(self, pattern: str) -> List[str]:
         """Search for files matching a pattern (SQL LIKE on filename/path)."""
         if self.conn is None:
@@ -262,6 +266,10 @@ class FileIndexer:
         self.conn.commit()
         logger.info(f"Indexing complete. Total files indexed: {indexed_count}")
         return indexed_count
+
+    def index(self, root_path: str, **kwargs) -> int:
+        """Alias for index_directory() for backward compatibility."""
+        return self.index_directory(root_path, **kwargs)
 
 
 if __name__ == '__main__':
